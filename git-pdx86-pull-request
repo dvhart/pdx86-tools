@@ -1,0 +1,63 @@
+#!/bin/sh
+
+URL="git://git.infradead.org/users/dvhart/linux-platform-drivers-x86.git"
+TAG=$1
+MSG=pull-$TAG.msg
+
+usage() {
+	echo "usage: $(basename $0) TAG"
+}
+
+if [ $# -ne 1 ] || [ -z "$TAG" ]; then
+	echo "ERROR: invalid arguments"
+	usage
+	exit 1
+fi
+
+git cat-file -e $TAG 2>/dev/null
+if [ $? -ne 0 ]; then
+	echo "$TAG is not a git object"
+	exit 1
+fi
+
+TAG_TYPE=$(git cat-file -t $TAG)
+if [ ! "$TAG_TYPE" = "tag" ]; then
+	echo "ERROR: $TAG is not a tag (it's a $TAG_TYPE)"
+	usage
+	exit 1
+fi
+
+if [ -e $MSG ]; then
+	echo "ERROR: $MSG exists, remove or rename and try again."
+	exit 1
+fi
+
+SUBJECT=$(echo $TAG | sed -e "s/\(platform-drivers-x86\)-v\(.*\)/\1 for \2/" || echo $TAG)
+
+(cat << EOM
+From: Darren Hart <dvhart@infradead.org>
+Date: $(date -R)
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] $SUBJECT
+
+Hi Linus,
+
+WRITEME
+
+Thanks,
+
+Darren Hart
+Intel Open Source Technology Center
+
+EOM
+) > $MSG
+
+git request-pull master $URL $1 >> $MSG
+if [ $? -ne 0 ]; then
+	rm $MSG
+	echo "ERROR: request pull failed"
+	exit 1
+fi
+vim $MSG +3
+echo "Use 'mutt -H $MSG' to send the pull request."
