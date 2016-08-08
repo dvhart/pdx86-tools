@@ -1,5 +1,4 @@
 #!/bin/bash
-
 usage() {
 	echo Usage: $(basename $0) VERSION COMMIT
 	echo "e.g. $(basename $0) 4.4-2 for-next"
@@ -13,6 +12,13 @@ fi
 
 VERSION=$1
 COMMIT=$2
+
+# Perform a sanity check before creating the tag
+pdx86-cherry.sh master $2
+if [ $? -ne 0 ]; then
+	exit 1
+fi
+
 TAG="platform-drivers-x86-v$VERSION"
 
 which tempfile &> /dev/null
