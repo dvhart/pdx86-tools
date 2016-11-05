@@ -1,0 +1,39 @@
+#!/bin/bash
+
+MODVALUE="m"
+
+# Basic dependencies that we require to build anything
+echo "CONFIG_PCI=y"
+echo "CONFIG_ACPI=y"
+echo "CONFIG_X86_PLATFORM_DEVICES=y"
+
+# Required by MLX_CPLD_PLATFORM
+echo "CONFIG_64BIT=y"
+echo "CONFIG_X86_EXTENDED_PLATFORM=y"
+echo "CONFIG_MLX_PLATFORM=y"
+
+if [ "$1" = "-y" ]; then
+	MODVALUE="y"
+else
+	echo "CONFIG_MODULES=y"
+fi
+
+while IFS='' read -r LINE || [[ -n "$line" ]]; do
+	if [ "${LINE#config }" != "$LINE" ]; then
+		CONFIG=${LINE#config }
+		continue
+	fi
+
+	if [ -n "$CONFIG" ]; then
+		if [[ "$LINE" =~ "bool" ]]; then
+			echo "CONFIG_$CONFIG=y"
+		elif [[ "$LINE" =~ "tristate" ]]; then
+			echo "CONFIG_$CONFIG=$MODVALUE"
+		else
+			echo "Type not found for config \"$CONFIG\""
+			exit 1
+		fi
+	fi
+	unset CONFIG
+done < drivers/platform/x86/Kconfig
+
