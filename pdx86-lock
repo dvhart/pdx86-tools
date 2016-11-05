@@ -1,0 +1,93 @@
+#!/bin/sh
+
+# Clone the repository into a temporary directory
+# Checkout the mutex branch
+# Read and update the LOCK file if possible with PDX86_ID
+# Remove the temporary repository
+# Report on the result
+
+clean_up() {
+	rm -rf $PDX86_DIR
+}
+
+clean_up_trap() {
+	clean_up
+	exit 1
+}
+trap clean_up HUP INT TERM
+
+PDX86_REPO=ssh://git.infradead.org/srv/git/users/dvhart/pdx86-tools.git
+LOCKFILE="LOCK"
+ERR=1
+
+
+if [ -z "$PDX86_ID" ]; then
+	echo "ERROR: PDX86_ID environment variable is not set"
+	exit 1
+fi
+
+PDX86_DIR=`mktemp -d`
+
+if [ ! -d "$PDX86_DIR" ]; then
+	echo "ERROR: failed to create temp directory"
+	exit $ERR
+fi
+
+git clone -b mutex $PDX86_REPO $PDX86_DIR 2> /dev/null
+if [ $? -ne 0 ]; then
+	echo "ERROR: failed to clone pdx86 repository ($PDX86_REPO)"
+	clean_up
+	exit $ERR
+fi
+
+push() {
+		git commit -a -m "$1" &> /dev/null && git push 2> /dev/null
+		if [ $? -ne 0 ]; then
+			echo "ERROR: failed to push LOCK change"
+			clean_up
+			exit $ERR
+		fi
+}
+
+owner() {
+	if [ ! "$VAL" = "$PDX86_ID" ]; then
+		echo "ERROR: Lock held by $VAL"
+		clean_up
+		exit $ERR
+	fi
+}
+
+lock() {
+	if [ -z "$VAL" ]; then
+		echo "$PDX86_ID" > $LOCKFILE
+		push "Lock acquired by $PDX86_ID"
+		echo "Lock acquired by $PDX86_ID"
+		return
+	fi
+	owner
+	echo "Lock already held by $PDX86_ID"
+}
+
+unlock() {
+	if [ -z "$VAL" ]; then
+		echo "Lock already free"
+		clean_up
+		exit 0
+	fi
+	owner
+	echo "" > $LOCKFILE
+	push "Lock released by $PDX86_ID"
+	echo "Lock released"
+}
+
+cd $PDX86_DIR
+VAL=`cat $LOCKFILE`
+
+if [ "$1" = "-u" ]; then
+	unlock
+else
+	lock
+fi
+
+clean_up
+exit 0
