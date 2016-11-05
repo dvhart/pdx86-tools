@@ -14,7 +14,7 @@ VERSION=$1
 COMMIT=$2
 
 # Perform a sanity check before creating the tag
-pdx86-cherry.sh master $2
+pdx86-cherry.sh $2
 if [ $? -ne 0 ]; then
 	exit 1
 fi
@@ -41,6 +41,7 @@ PREFIX=''
 echo -e "platform-drivers-x86 for $VERSION\n";
 echo "SHORT SUMMARY OF CHANGES FOR LINUS";
 git log --pretty='format:%s' master..$COMMIT | \
+sed -e "s/^platform\/x86: \?//" | \
 while read line || [[ -n "$line" ]]; do
 	NEW_PREFIX=$(echo $line | cut -d ':' -f 1)
 	SUBJECT=$(echo $line | sed -e 's/^[^:]*: *\(.*\)/\1/')
