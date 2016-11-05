@@ -14,7 +14,7 @@ VERSION=$1
 COMMIT=$2
 
 # Perform a sanity check before creating the tag
-pdx86-cherry.sh $2
+pdx86-cherry $2
 if [ $? -ne 0 ]; then
 	exit 1
 fi
