@@ -26,7 +26,7 @@ if [ -z "$PDX86_ID" ]; then
 	exit 1
 fi
 
-PDX86_DIR=`mktemp -d`
+PDX86_DIR=`mktemp -d --suffix=.pdx86-lock`
 
 if [ ! -d "$PDX86_DIR" ]; then
 	echo "ERROR: failed to create temp directory"
