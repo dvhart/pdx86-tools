@@ -16,7 +16,7 @@ clean_up_trap() {
 }
 trap clean_up HUP INT TERM
 
-PDX86_REPO=ssh://git.infradead.org/srv/git/users/dvhart/pdx86-tools.git
+PDX86_REPO=ssh://$PDX86_ID@git.infradead.org/srv/git/pdx86-tools.git
 LOCKFILE="LOCK"
 ERR=1
 
