@@ -5,7 +5,7 @@ PROG_DIR="${0%/*}"
 
 usage() {
 	echo "Usage: $PROG_NAME <VERSION> <COMMIT>"
-	echo "e.g. $PROG_NAME 4.4-2 for-next"
+	echo "e.g. $PROG_NAME v4.4-2 for-next"
 }
 
 if [ $# -ne 2 ]; then
@@ -14,8 +14,8 @@ if [ $# -ne 2 ]; then
 	exit 1
 fi
 
-VERSION=$1
-COMMIT=$2
+VERSION="v${1##*v}"	# Always produce "v4.4-2"-like version
+COMMIT=$2		# Whatever commit ID Git recognizes
 
 # Perform a sanity check before creating the tag
 $PROG_DIR/pdx86-cherry $2
@@ -23,7 +23,7 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-TAG="platform-drivers-x86-v$VERSION"
+TAG="platform-drivers-x86-$VERSION"
 
 which tempfile &> /dev/null
 if [ $? -eq 0 ]; then
@@ -57,7 +57,7 @@ while read line || [[ -n "$line" ]]; do
 done
 ) > $TMP
 $EDITOR $TMP
-git tag -s -F $TMP -a platform-drivers-x86-v$VERSION $COMMIT
+git tag -s -F $TMP -a platform-drivers-x86-$VERSION $COMMIT
 if [ $? -ne 0 ]; then
 	echo "git tag failed. Edited tag message saved in $TMP."
 	exit 1
