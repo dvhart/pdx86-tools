@@ -1,6 +1,6 @@
 #!/bin/sh
 
-URL="git://git.infradead.org/users/dvhart/linux-platform-drivers-x86.git"
+URL="git://git.infradead.org/linux-platform-drivers-x86.git"
 TAG=$1
 MSG=pull-$TAG.msg
 
