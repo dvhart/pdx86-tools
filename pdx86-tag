@@ -27,11 +27,11 @@ TAG="platform-drivers-x86-$VERSION"
 
 which tempfile &> /dev/null
 if [ $? -eq 0 ]; then
-	TMP=$(tempfile -p pdx86 -s .tag)
+	TMP=$(tempfile -s .pdx86-tag)
 else
 	which mktemp &> /dev/null
 	if [ $? -eq 0 ]; then
-		TMP=$(mktemp --suffix=.tag pdx86-XXX)
+		TMP=$(mktemp --suffix=.pdx86-tag)
 	fi
 fi
 if [ -z "$TMP" ]; then
