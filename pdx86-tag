@@ -1,7 +1,11 @@
 #!/bin/bash
+
+PROG_NAME="${0##*/}"
+PROG_DIR="${0%/*}"
+
 usage() {
-	echo Usage: $(basename $0) VERSION COMMIT
-	echo "e.g. $(basename $0) 4.4-2 for-next"
+	echo "Usage: $PROG_NAME <VERSION> <COMMIT>"
+	echo "e.g. $PROG_NAME 4.4-2 for-next"
 }
 
 if [ $# -ne 2 ]; then
@@ -14,7 +18,7 @@ VERSION=$1
 COMMIT=$2
 
 # Perform a sanity check before creating the tag
-pdx86-cherry $2
+$PROG_DIR/pdx86-cherry $2
 if [ $? -ne 0 ]; then
 	exit 1
 fi
