@@ -1,11 +1,14 @@
 #!/bin/sh
 
+PROG_NAME="${0##*/}"
+PROG_DIR="${0%/*}"
+
 URL="git://git.infradead.org/linux-platform-drivers-x86.git"
 TAG=$1
 MSG=pull-$TAG.msg
 
 usage() {
-	echo "usage: $(basename $0) TAG"
+	echo "usage: $PROG_NAME <TAG>"
 }
 
 if [ $# -ne 1 ] || [ -z "$TAG" ]; then
