@@ -36,9 +36,17 @@ if [ -e $MSG ]; then
 fi
 
 SUBJECT=$(echo $TAG | sed -e "s/\(platform-drivers-x86\)-v\(.*\)/\1 for \2/" || echo $TAG)
+USERNAME=$(git config --get user.name)
+USEREMAIL=$(git config --get user.email)
 
-(cat << EOM
-From: Darren Hart <dvhart@infradead.org>
+if [ -s ~/.signature ]; then
+	SIGNATURE=$(cat ~/.signature)
+else
+	SIGNATURE="$USERNAME"
+fi
+
+cat > $MSG << EOM
+From: $USERNAME <$USEREMAIL>
 Date: $(date -R)
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: LKML <linux-kernel@vger.kernel.org>
@@ -50,11 +58,9 @@ WRITEME
 
 Thanks,
 
-Darren Hart
-Intel Open Source Technology Center
+$SIGNATURE
 
 EOM
-) > $MSG
 
 git request-pull master $URL $1 >> $MSG
 if [ $? -ne 0 ]; then
