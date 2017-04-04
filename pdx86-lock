@@ -20,6 +20,7 @@ trap clean_up HUP INT TERM
 PDX86_REPO=ssh://$PDX86_ID@git.infradead.org/srv/git/pdx86-tools.git
 LOCKFILE="LOCK"
 LEASE_HOURS=2
+FORCE=false
 CMD="lock"
 ERR=1
 
@@ -66,6 +67,11 @@ lock() {
 		push "Lock acquired by $PDX86_ID (For $LEASE_HOURS hours)"
 		echo "Lock acquired by $PDX86_ID (For $LEASE_HOURS hours)"
 		return
+	elif ($FORCE && [ ! "$VAL" = "$PDX86_ID" ]); then
+		echo "$PDX86_ID" > $LOCKFILE
+		push "Lock forcibly acquired by $PDX86_ID (For $LEASE_HOURS hours)"
+		echo "Lock forcibly acquired by $PDX86_ID (For $LEASE_HOURS hours)"
+		return
 	fi
 	owner
 	echo "Lock already held by $PDX86_ID"
@@ -74,19 +80,31 @@ lock() {
 unlock() {
 	if [ -z "$VAL" ]; then
 		echo "Lock already free"
-		return
+	elif [ "$VAL" = "$PDX86_ID" ]; then
+		echo "" > $LOCKFILE
+		push "Lock released by $PDX86_ID"
+		echo "Lock released"
+	elif $FORCE; then
+		echo "" > $LOCKFILE
+		push "Lock forcibly released by $PDX86_ID"
+		echo "Lock forcibly released"
+	else
+		owner
+		clean_up
+		exit $ERR
 	fi
-	owner
-	echo "" > $LOCKFILE
-	push "Lock released by $PDX86_ID"
-	echo "Lock released"
 }
+
 
 cd $PDX86_DIR
 VAL=`cat $LOCKFILE`
 
 while true; do
 	case "$1" in
+	"-f")
+		shift
+		FORCE=true
+		;;
 	"-t")
 		shift
 		LEASE_HOURS="$1"
