@@ -7,22 +7,22 @@
 # Remove the temporary repository
 # Report on the result
 
-clean_up() {
-	rm -rf $PDX86_DIR
-}
-
-clean_up_trap() {
-	clean_up
-	exit 1
-}
-trap clean_up HUP INT TERM
-
 PDX86_REPO=ssh://$PDX86_ID@git.infradead.org/srv/git/pdx86-tools.git
 LOCKFILE="LOCK"
 LEASE_HOURS=2
 FORCE=false
 CMD="lock"
 ERR=1
+
+clean_up() {
+	rm -rf $PDX86_DIR
+}
+
+clean_up_trap() {
+	clean_up
+	exit $ERR
+}
+trap clean_up HUP INT TERM
 
 while true; do
 	case "$1" in
@@ -56,7 +56,7 @@ done
 
 if [ -z "$PDX86_ID" ]; then
 	echo "ERROR: PDX86_ID environment variable is not set"
-	exit 1
+	exit $ERR
 fi
 
 PDX86_DIR=`mktemp -d --suffix=.pdx86-lock`
