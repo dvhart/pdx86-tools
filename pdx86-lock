@@ -54,23 +54,23 @@ push() {
 }
 
 owner() {
-	if [ ! "$VAL" = "$PDX86_ID" ]; then
-		echo "ERROR: Lock held by $VAL:"
-		git log --pretty=format:"%h %s%n%cr" -1 -- LOCK
-		LOCK_TIME=$(date -d "$(git log --pretty=format:%cI origin/mutex -1 -- LOCK)" +%s)
-		CUR_TIME=$(date +%s)
-		ELAPSED_TIME=$(($CUR_TIME-$LOCK_TIME))
-		LAST_LEASE=$((3600*$(git log --pretty=format:%s -1 -- LOCK | sed -e "s/.*For \([0-9][0-9]*\) hours.*/\1/")))
-		if [ $? -ne 0 ]; then
-			echo "No lease time provided"
-		elif [ $ELAPSED_TIME -lt $LAST_LEASE ]; then
-			echo "Time remaining on lease: $(($(($LAST_LEASE-$ELAPSED_TIME))/60)) minutes"
-		else
-			echo "Lease expired: $(($(($ELAPSED_TIME-$LAST_LEASE))/60)) minutes ago"
-		fi
+	if [ -z "$VAL" ]; then
+		echo "Lock is free"
+		return
+	fi
 
-		clean_up
-		exit $ERR
+	echo "Lock held by $VAL:"
+	git log --pretty=format:"%h %s%n%cr" -1 -- LOCK
+	LOCK_TIME=$(date -d "$(git log --pretty=format:%cI origin/mutex -1 -- LOCK)" +%s)
+	CUR_TIME=$(date +%s)
+	ELAPSED_TIME=$(($CUR_TIME-$LOCK_TIME))
+	LAST_LEASE=$((3600*$(git log --pretty=format:%s -1 -- LOCK | sed -e "s/.*For \([0-9][0-9]*\) hours.*/\1/")))
+	if [ $? -ne 0 ]; then
+		echo "No lease time provided"
+	elif [ $ELAPSED_TIME -lt $LAST_LEASE ]; then
+		echo "Time remaining on lease: $(($(($LAST_LEASE-$ELAPSED_TIME))/60)) minutes"
+	else
+		echo "Lease expired: $(($(($ELAPSED_TIME-$LAST_LEASE))/60)) minutes ago"
 	fi
 }
 
@@ -79,15 +79,13 @@ lock() {
 		echo "$PDX86_ID" > $LOCKFILE
 		push "Lock acquired by $PDX86_ID (For $LEASE_HOURS hours)"
 		echo "Lock acquired by $PDX86_ID (For $LEASE_HOURS hours)"
-		return
 	elif ($FORCE && [ ! "$VAL" = "$PDX86_ID" ]); then
 		echo "$PDX86_ID" > $LOCKFILE
 		push "Lock forcibly acquired by $PDX86_ID (For $LEASE_HOURS hours)"
 		echo "Lock forcibly acquired by $PDX86_ID (For $LEASE_HOURS hours)"
-		return
+	else
+		owner
 	fi
-	owner
-	echo "Lock already held by $PDX86_ID"
 }
 
 unlock() {
@@ -118,6 +116,10 @@ while true; do
 		shift
 		FORCE=true
 		;;
+	"-s")
+		shift
+		CMD="status"
+		;;
 	"-t")
 		shift
 		LEASE_HOURS="$1"
@@ -136,6 +138,9 @@ done
 case "$CMD" in
 "lock")
 	lock
+	;;
+"status")
+	owner
 	;;
 "unlock")
 	unlock
