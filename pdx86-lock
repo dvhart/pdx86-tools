@@ -18,6 +18,7 @@ trap clean_up HUP INT TERM
 
 PDX86_REPO=ssh://$PDX86_ID@git.infradead.org/srv/git/pdx86-tools.git
 LOCKFILE="LOCK"
+CMD="lock"
 ERR=1
 
 
@@ -83,11 +84,31 @@ unlock() {
 cd $PDX86_DIR
 VAL=`cat $LOCKFILE`
 
-if [ "$1" = "-u" ]; then
-	unlock
-else
+while true; do
+	case "$1" in
+	"-u")
+		shift
+		CMD="unlock"
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
+case "$CMD" in
+"lock")
 	lock
-fi
+	;;
+"unlock")
+	unlock
+	;;
+*)
+	echo "Unknown CMD: $CMD"
+	clean_up
+	exit $ERR
+	;;
+esac
 
 clean_up
 exit 0
