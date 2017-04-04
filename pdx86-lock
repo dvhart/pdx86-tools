@@ -3,6 +3,7 @@
 # Clone the repository into a temporary directory
 # Checkout the mutex branch
 # Read and update the LOCK file if possible with PDX86_ID
+# Store a lock lease time in hours in the commit message
 # Remove the temporary repository
 # Report on the result
 
@@ -18,6 +19,7 @@ trap clean_up HUP INT TERM
 
 PDX86_REPO=ssh://$PDX86_ID@git.infradead.org/srv/git/pdx86-tools.git
 LOCKFILE="LOCK"
+LEASE_HOURS=2
 CMD="lock"
 ERR=1
 
@@ -61,8 +63,8 @@ owner() {
 lock() {
 	if [ -z "$VAL" ]; then
 		echo "$PDX86_ID" > $LOCKFILE
-		push "Lock acquired by $PDX86_ID"
-		echo "Lock acquired by $PDX86_ID"
+		push "Lock acquired by $PDX86_ID (For $LEASE_HOURS hours)"
+		echo "Lock acquired by $PDX86_ID (For $LEASE_HOURS hours)"
 		return
 	fi
 	owner
@@ -85,6 +87,11 @@ VAL=`cat $LOCKFILE`
 
 while true; do
 	case "$1" in
+	"-t")
+		shift
+		LEASE_HOURS="$1"
+		shift
+		;;
 	"-u")
 		shift
 		CMD="unlock"
