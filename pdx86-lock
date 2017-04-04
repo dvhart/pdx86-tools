@@ -24,6 +24,35 @@ FORCE=false
 CMD="lock"
 ERR=1
 
+while true; do
+	case "$1" in
+	"-f")
+		shift
+		FORCE=true
+		;;
+	"-h")
+		usage
+		exit 0
+		;;
+	"-s")
+		shift
+		CMD="status"
+		;;
+	"-t")
+		shift
+		LEASE_HOURS="$1"
+		shift
+		;;
+	"-u")
+		shift
+		CMD="unlock"
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
 
 if [ -z "$PDX86_ID" ]; then
 	echo "ERROR: PDX86_ID environment variable is not set"
@@ -43,6 +72,19 @@ if [ $? -ne 0 ]; then
 	clean_up
 	exit $ERR
 fi
+
+usage() {
+	echo "Usage: $(basename $0) [OPTIONS]"
+	echo ""
+	echo "With no arguments, attempt to acquire the lock with a default 2 hour lease"
+	echo ""
+	echo "  -f     force the lock or unlock operation"
+	echo "         (has no effect if you own the lock)"
+	echo "  -h     display this help and exit"
+	echo "  -s     show status of the lock, but do not acquire or free it"
+	echo "  -t NUM specify a lease time of NUM hours, defaults to 2 hours"
+	echo "  -u     release the lock"
+}
 
 push() {
 		git commit -a -m "$1" > /dev/null 2>&1 && git push 2> /dev/null
@@ -110,32 +152,10 @@ unlock() {
 cd $PDX86_DIR
 VAL=`cat $LOCKFILE`
 
-while true; do
-	case "$1" in
-	"-f")
-		shift
-		FORCE=true
-		;;
-	"-s")
-		shift
-		CMD="status"
-		;;
-	"-t")
-		shift
-		LEASE_HOURS="$1"
-		shift
-		;;
-	"-u")
-		shift
-		CMD="unlock"
-		;;
-	*)
-		break
-		;;
-	esac
-done
-
 case "$CMD" in
+"help")
+	usage
+	;;
 "lock")
 	lock
 	;;
@@ -147,6 +167,7 @@ case "$CMD" in
 	;;
 *)
 	echo "Unknown CMD: $CMD"
+	usage
 	clean_up
 	exit $ERR
 	;;
