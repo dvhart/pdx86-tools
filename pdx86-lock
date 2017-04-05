@@ -31,6 +31,9 @@ clone() {
 		clean_up
 		exit $ERR
 	fi
+
+	cd $PDX86_DIR
+	VAL=`cat $LOCKFILE`
 }
 
 usage() {
@@ -144,9 +147,6 @@ while true; do
 	esac
 	shift
 done
-
-cd $PDX86_DIR
-VAL=`cat $LOCKFILE`
 
 case "$CMD" in
 "help")
