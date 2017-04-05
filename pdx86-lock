@@ -27,7 +27,6 @@ trap clean_up HUP INT TERM
 while true; do
 	case "$1" in
 	"-f")
-		shift
 		FORCE=true
 		;;
 	"-h")
@@ -35,22 +34,20 @@ while true; do
 		exit 0
 		;;
 	"-s")
-		shift
 		CMD="status"
 		;;
 	"-t")
 		shift
 		LEASE_HOURS="$1"
-		shift
 		;;
 	"-u")
-		shift
 		CMD="unlock"
 		;;
 	*)
 		break
 		;;
 	esac
+	shift
 done
 
 
