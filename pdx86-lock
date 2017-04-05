@@ -24,44 +24,6 @@ clean_up_trap() {
 }
 trap clean_up HUP INT TERM
 
-while true; do
-	case "$1" in
-	"-f")
-		FORCE=true
-		;;
-	"-h")
-		CMD="help"
-		;;
-	"-s")
-		CMD="status"
-		;;
-	"-t")
-		shift
-		LEASE_HOURS="$1"
-		;;
-	"-u")
-		CMD="unlock"
-		;;
-	*)
-		break
-		;;
-	esac
-	shift
-done
-
-
-if [ -z "$PDX86_ID" ]; then
-	echo "ERROR: PDX86_ID environment variable is not set"
-	exit $ERR
-fi
-
-PDX86_DIR=`mktemp -d --suffix=.pdx86-lock`
-
-if [ ! -d "$PDX86_DIR" ]; then
-	echo "ERROR: failed to create temp directory"
-	exit $ERR
-fi
-
 clone() {
 	git clone -b mutex $PDX86_REPO $PDX86_DIR 2> /dev/null
 	if [ $? -ne 0 ]; then
@@ -146,6 +108,42 @@ unlock() {
 	fi
 }
 
+if [ -z "$PDX86_ID" ]; then
+	echo "ERROR: PDX86_ID environment variable is not set"
+	exit $ERR
+fi
+
+PDX86_DIR=`mktemp -d --suffix=.pdx86-lock`
+
+if [ ! -d "$PDX86_DIR" ]; then
+	echo "ERROR: failed to create temp directory"
+	exit $ERR
+fi
+
+while true; do
+	case "$1" in
+	"-f")
+		FORCE=true
+		;;
+	"-h")
+		CMD="help"
+		;;
+	"-s")
+		CMD="status"
+		;;
+	"-t")
+		shift
+		LEASE_HOURS="$1"
+		;;
+	"-u")
+		CMD="unlock"
+		;;
+	*)
+		break
+		;;
+	esac
+	shift
+done
 
 cd $PDX86_DIR
 VAL=`cat $LOCKFILE`
