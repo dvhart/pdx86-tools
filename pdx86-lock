@@ -62,12 +62,14 @@ if [ ! -d "$PDX86_DIR" ]; then
 	exit $ERR
 fi
 
-git clone -b mutex $PDX86_REPO $PDX86_DIR 2> /dev/null
-if [ $? -ne 0 ]; then
-	echo "ERROR: failed to clone pdx86 repository ($PDX86_REPO)"
-	clean_up
-	exit $ERR
-fi
+clone() {
+	git clone -b mutex $PDX86_REPO $PDX86_DIR 2> /dev/null
+	if [ $? -ne 0 ]; then
+		echo "ERROR: failed to clone pdx86 repository ($PDX86_REPO)"
+		clean_up
+		exit $ERR
+	fi
+}
 
 usage() {
 	echo "Usage: $(basename $0) [OPTIONS]"
@@ -153,12 +155,15 @@ case "$CMD" in
 	usage
 	;;
 "lock")
+	clone
 	lock
 	;;
 "status")
+	clone
 	owner
 	;;
 "unlock")
+	clone
 	unlock
 	;;
 *)
