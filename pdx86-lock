@@ -30,8 +30,7 @@ while true; do
 		FORCE=true
 		;;
 	"-h")
-		usage
-		exit 0
+		CMD="help"
 		;;
 	"-s")
 		CMD="status"
