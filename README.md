@@ -4,13 +4,19 @@ patches in a folder. I usually find those because patchwork lists something I
 don't recognize.
 
 I have started using patchwork to help others check the status of their patch:
-New - I haven't looked at it Under Review - Usually means I'm waiting for a
-sub-maintainer's ack.  Accpted & Archived - I've queued it to the testing branch
-(this one perhaps I should wait on and leave in Under Review until I've pushed
-to for-next) Changes Requested & Archived - ...  Deferred & Archived - means it
-was related to pdx86, but applied by    someone else (usually Rafael).  There's
-one more for not applicable to this tree, I forget the name (on the plane
-without wifi).
+
+New - I haven't looked at it
+Under Review - Usually means I'm waiting for a sub-maintainer's ack.
+Accpted & Archived -
+	I've queued it to the testing branch (this one perhaps I should
+	wait on and leave in Under Review until I've pushed to for-next)
+Changes Requested & Archived - ...
+Deferred & Archived -
+	means it was related to pdx86, but applied by someone else
+	(usually Rafael).
+... -
+	There's one more for not applicable to this tree, I forget the
+	name (on the plane without wifi).
 
 When I receive a patch, I quickly test it for checkpatch using mutt macros, if
 that fails, the author gets a request to clean up the patch.  I don't review it
