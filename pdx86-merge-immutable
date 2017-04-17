@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# Use this script to conveniently merge a remote immutable branch without adding
+# a remote. It will fetch the remote branch to a local branch named 'tmp/BRANCH'
+# and merge it into the current branch. It will open EDITOR to allow for changes
+# to the merge commit message (necessary if you do not provide JUSTIFICATION).
+# It will then delete the 'tmp/BRANCH'. On a successful merge, it will display
+# the merge commit message.
+
+usage() {
+	echo "Usage: $(basename $0) GIT_URI BRANCH [JUSTIFICATION]"
+	echo ""
+	echo "  -h             display this help and exit"
+	echo "  GIT_URI        git URI to fetch BRANCH from"
+	echo "  BRANCH         branch to fetch and merge from GIT_URI"
+	echo "  JUSTIFICATION  short phrase justifying the merge, e.g. 'avoid linux-next conflicts'"
+}
+
+if [ "$1" = "-h" ]; then
+	usage
+	exit 0
+elif [ $# -lt 2 ] || [ $# -gt 3 ]; then
+	usage
+	exit 1
+fi
+
+URL=$1
+BRANCH=$2
+JUSTIFICATION="SHORT JUSTIFICATION"
+if [ -n "$3" ]; then
+	JUSTIFICATION="$3"
+fi
+
+# Prepare the git merge commit message
+# If you did not provide JUSTIFICATION, you will need to provide it in EDITOR
+SOB="Signed-off-by: $(git config user.name) <$(git config user.email)>"
+MSG="$(printf "Merge branch '$2'\n\nMerge branch '$2' of\n$1\nto $JUSTIFICATION.\n\n$SOB")"
+
+# Perform the commands in sequence, catching a failure at any point
+git fetch -q $1 $2:tmp/$2 && git merge -q -e -m "$MSG" tmp/$2 && git branch -q -d tmp/$2
+
+if [ $? -ne 0 ]; then
+	echo "Error: Failed to merge $1 $2"
+	exit 1
+fi
+
+echo -e "\nMerged $1 $2:\n"
+git log -1
