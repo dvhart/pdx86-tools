@@ -20,7 +20,11 @@ COMMIT=$2		# Whatever commit ID Git recognizes
 # Perform a sanity check before creating the tag
 $PROG_DIR/pdx86-cherry $2
 if [ $? -ne 0 ]; then
-	exit 1
+	echo "Duplicate commits detected, tag anyway? [y/N] "
+	read RESPONSE
+	if [ ! "$RESPONSE" = "y" ] && [ ! "$RESPONSE" = "Y" ]; then
+		exit 1
+	fi
 fi
 
 TAG="platform-drivers-x86-$VERSION"
