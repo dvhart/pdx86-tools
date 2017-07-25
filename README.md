@@ -68,11 +68,36 @@ testing
 fixes
 
 At this point, most patches continue through the above path into testing and
-for-next for the next merge window. Some patches which either fix bugs or add
-DMI matches and quirks, or otherwise trivial patches, are added to fixes. 0-day
-watches all branches, so it gets testing there as well and some additional
-manually builds from me so I don't accidentally break something in the rc
-period.
+for-next for the next merge window. 0-day watches all branches, so it gets
+testing there as well and some additional manually builds from me so I don't
+accidentally break something in the rc period.
+
+Patches flow through the branches as follows, always starting with testing:
+
+    testing -> for-next -> master (merge window)
+                        |
+                  (cherry-pick)
+                        |
+                        -> fixes-> master (rc cycle)
+
+Linus has expressed a preference for cherry-picking of fixes from our own
+development trees, rather than merging them in from the fixes branch or RC tags
+as that runs the risk of pulling in changes from other developers. This means we
+will deliver fixes twice: once during the rc cycle, and once during the merge
+window. When this happens, the pdx86-tag script will catch the duplicate commits
+and prompt for confirmation before creating the tag. We must note this in the
+pull request to Linus, explaining these duplicates were fixes delivered during
+the rc cycle but kept in the development branch to avoid conflicts with
+subsequent patches.
+
+Note: We should monitor our fixes branch and if Linus' concerns are warranted,
+or if we would be better off merging the fixes branch into for-next after he
+merges it, thus avoiding the issue with duplicate patches.
+
+In the rare event of a late rc cycle fix (rc6+), we may not have as much time as
+we would like to run through testing and for-next before cherry-picking a patch
+to fixes. In those cases, we will have to fast track the fix and explicitly
+discuss those cases to avoid errors.
 
 First, the initial goal. I would like to improve the number of reviews patches
 to platform-drivers-x86 receive. Having someone I can rely on to be paying
