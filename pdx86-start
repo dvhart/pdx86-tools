@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# Prepare to work on Linux Platform Drivers x86
+# Grab the repo lock
+# Update the remotes and notify which branches are out of date
+# Enter a shell with an optional prompt prefix for context
+# When the user exits, release the repo lock
+
+# Verify we're running in the linux-platform-driver-x86 git repository
+git remote -v | grep -q git.infradead.org/srv/git/linux-platform-drivers-x86.git
+if [ $? -ne 0 ]; then
+	echo "Error: linux-platform-drivers-x86 remote not found"
+	echo "       Are you in your pdx86 directory?"
+	exit 1
+fi
+
+# Lock the repository
+pdx86-lock
+if [ $? -ne 0 ]; then
+	exit 1
+fi
+
+# Sync up with the remotes
+echo "Update Remotes"
+git remote update -p | grep -e "^Fetching "
+
+# Report on local vs remote state
+pdx86-branch-status
+
+# Report on Patchwork state
+#WRITEME
+
+# Exit and return to shell
+echo
+echo "Entering PDx86 Workflow"
+echo "Type 'exit' to release the lock and return to your shell."
+echo
+
+# Enter the PDX86 Shell
+# To see the prompt change, include PS1_PREFIX in your PS1 definition
+PS1_PREFIX="PDX86" $SHELL
+
+# Wait for "exit" then unlock the repository and return
+pdx86-lock -u
