@@ -6,9 +6,9 @@ for BRANCH in testing for-next fixes; do
 	REMOTE=$(git config branch.$BRANCH.remote)
 	if [ "$(git rev-list refs/heads/$BRANCH -1)" = \
 	     "$(git rev-list refs/remotes/$REMOTE/$BRANCH -1)" ]; then
-		printf "%.8s: Up to date with $REMOTE/$BRANCH\n" "$BRANCH"
+		printf "[\033[1;37m%8s\033[m]: Up to date with $REMOTE/$BRANCH\n" "$BRANCH"
 		continue
 	fi
-	printf "%.8s: Out of sync with $REMOTE/$BRANCH\n" "$BRANCH"
+	printf "[\033[1;37m%8s\033[m]: Out of sync with $REMOTE/$BRANCH\n" "$BRANCH"
 	git show-branch $BRANCH $REMOTE/$BRANCH
 done
