@@ -16,6 +16,14 @@ fi
 
 VERSION="v${1##*v}"	# Always produce "v4.4-2"-like version
 COMMIT=$2		# Whatever commit ID Git recognizes
+TAG="platform-drivers-x86-$VERSION"
+
+# Verify the tag does not already exist
+git rev-parse $TAG &> /dev/null
+if [ $? -eq 0 ]; then
+	echo "Tag already exists: $TAG"
+	exit 1
+fi
 
 # Perform a sanity check before creating the tag
 $PROG_DIR/pdx86-cherry $2
@@ -27,7 +35,6 @@ if [ $? -ne 0 ]; then
 	fi
 fi
 
-TAG="platform-drivers-x86-$VERSION"
 
 which tempfile &> /dev/null
 if [ $? -eq 0 ]; then
