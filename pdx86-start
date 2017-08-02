@@ -15,10 +15,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Lock the repository
-pdx86-lock
-if [ $? -ne 0 ]; then
-	exit 1
-fi
+pdx86-lock || exit 1
 
 # Sync up with the remotes
 echo "Update Remotes"
