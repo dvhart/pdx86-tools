@@ -26,7 +26,7 @@ git fetch origin master:master
 pdx86-branch-status
 
 # Report on Patchwork state
-#WRITEME
+which pwclient > /dev/null && pwclient list -a no -f '%{id} %{state} %{delegate} %{name}'
 
 # Exit and return to shell
 echo
