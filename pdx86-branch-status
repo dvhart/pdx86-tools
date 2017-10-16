@@ -2,7 +2,7 @@
 
 echo
 echo "Branch Status"
-for BRANCH in testing for-next fixes; do
+for BRANCH in testing for-next fixes review-$PDX86_ID; do
 	REMOTE=$(git config branch.$BRANCH.remote)
 	if [ "$(git rev-list refs/heads/$BRANCH -1)" = \
 	     "$(git rev-list refs/remotes/$REMOTE/$BRANCH -1)" ]; then
