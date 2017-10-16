@@ -26,7 +26,14 @@ git fetch $(git config branch.master.remote)  master:master
 pdx86-branch-status
 
 # Report on Patchwork state
-which pwclient > /dev/null && pwclient list -a no -f '%{id} %{state} %{delegate} %{name}'
+echo -e "\nPatchwork Status"
+which pwclient &> /dev/null
+if [ $? -eq 0 ]; then
+	pwclient list -a no -f '%{id} %{state} %{delegate} %{name}'
+else
+	echo "Error: pwclient not found"
+fi
+
 
 # Exit and return to shell
 echo
