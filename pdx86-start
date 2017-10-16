@@ -17,9 +17,9 @@ fi
 # Lock the repository
 pdx86-lock || exit 1
 
-# Sync up with the remotes
+# Sync up with the remotes, prune them, and update the local master branch
 echo "Update Remotes"
-git remote update -p | grep -e "^Fetching "
+git fetch --all --prune
 git fetch $(git config branch.master.remote)  master:master
 
 # Report on local vs remote state
