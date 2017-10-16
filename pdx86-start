@@ -20,7 +20,7 @@ pdx86-lock || exit 1
 # Sync up with the remotes
 echo "Update Remotes"
 git remote update -p | grep -e "^Fetching "
-git fetch origin master:master
+git fetch $(git config branch.master.remote)  master:master
 
 # Report on local vs remote state
 pdx86-branch-status
