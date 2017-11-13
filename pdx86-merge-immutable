@@ -1,11 +1,10 @@
 #!/bin/sh
 
 # Use this script to conveniently merge a remote immutable branch without adding
-# a remote. It will fetch the remote branch to a local branch named 'tmp/BRANCH'
+# a remote. It will fetch the remote branch to an anonymous local branch
 # and merge it into the current branch. It will open EDITOR to allow for changes
 # to the merge commit message (necessary if you do not provide JUSTIFICATION).
-# It will then delete the 'tmp/BRANCH'. On a successful merge, it will display
-# the merge commit message.
+# On a successful merge, it will display the merge commit message.
 
 usage() {
 	echo "Usage: $(basename $0) GIT_URI BRANCH [JUSTIFICATION]"
@@ -37,7 +36,7 @@ SOB="Signed-off-by: $(git config user.name) <$(git config user.email)>"
 MSG="$(printf "Merge branch '$2'\n\nMerge branch '$2' of\n$1\nto $JUSTIFICATION.\n\n$SOB")"
 
 # Perform the commands in sequence, catching a failure at any point
-git fetch -q $1 $2:tmp/$2 && git merge -q -e -m "$MSG" tmp/$2 && git branch -q -d tmp/$2
+git fetch -q $1 $2 && git merge -q -e -m "$MSG" FETCH_HEAD
 
 if [ $? -ne 0 ]; then
 	echo "Error: Failed to merge $1 $2"
