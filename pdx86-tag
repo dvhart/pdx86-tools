@@ -39,7 +39,7 @@ if [ $? -ne 0 ]; then
 	[ "$RESPONSE" = "y" -o "$RESPONSE" = "Y" ] || exit_on_error $? "Aborted by user"
 fi
 
-
+TMP=
 which tempfile &> /dev/null
 if [ $? -eq 0 ]; then
 	TMP=$(tempfile -s .pdx86-tag)
