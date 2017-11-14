@@ -53,19 +53,19 @@ fi
 
 PREFIX=''
 (
-echo -e "platform-drivers-x86 for $VERSION\n";
-echo "SHORT SUMMARY OF CHANGES FOR LINUS";
-git log --pretty='format:%s' master..$COMMIT | \
-sed -e "s/^platform\/x86: \?//" | \
-while read line || [[ -n "$line" ]]; do
-	NEW_PREFIX=$(echo $line | cut -d ':' -f 1)
-	SUBJECT=$(echo $line | sed -e 's/^[^:]*: *\(.*\)/\1/')
-	if [ ! "$PREFIX" = "$NEW_PREFIX" ]; then
-		PREFIX="$NEW_PREFIX"
-		echo -e "\n$PREFIX:"
-	fi
-	echo " - $SUBJECT"
-done
+	echo -e "platform-drivers-x86 for $VERSION\n";
+	echo "SHORT SUMMARY OF CHANGES FOR LINUS";
+	git log --pretty='format:%s' master..$COMMIT | \
+	sed -e "s/^platform\/x86: \?//" | \
+	while read line || [[ -n "$line" ]]; do
+		NEW_PREFIX=$(echo $line | cut -d ':' -f 1)
+		SUBJECT=$(echo $line | sed -e 's/^[^:]*: *\(.*\)/\1/')
+		if [ ! "$PREFIX" = "$NEW_PREFIX" ]; then
+			PREFIX="$NEW_PREFIX"
+			echo -e "\n$PREFIX:"
+		fi
+		echo " - $SUBJECT"
+	done
 ) > $TMP
 $EDITOR $TMP
 exit_on_error $? "ERROR: Editor exited with error code $?."
