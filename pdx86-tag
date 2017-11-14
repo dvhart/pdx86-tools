@@ -8,6 +8,16 @@ usage() {
 	echo "e.g. $PROG_NAME v4.4-2 for-next"
 }
 
+exit_on_error() {
+	local code="$1"; shift
+	local msg="$1"; shift
+
+	[ $code -eq 0 ] && return 0
+
+	echo "$msg"
+	exit $code
+}
+
 if [ $# -ne 2 ]; then
 	echo $#
 	usage
@@ -19,20 +29,14 @@ COMMIT=$2		# Whatever commit ID Git recognizes
 TAG="platform-drivers-x86-$VERSION"
 
 # Verify the tag does not already exist
-git rev-parse $TAG &> /dev/null
-if [ $? -eq 0 ]; then
-	echo "Tag already exists: $TAG"
-	exit 1
-fi
+git rev-parse $TAG &> /dev/null && exit_on_error 1 "Tag already exists: $TAG"
 
 # Perform a sanity check before creating the tag
 $PROG_DIR/pdx86-cherry $2
 if [ $? -ne 0 ]; then
 	echo "Duplicate commits detected, tag anyway? [y/N] "
 	read RESPONSE
-	if [ ! "$RESPONSE" = "y" ] && [ ! "$RESPONSE" = "Y" ]; then
-		exit 1
-	fi
+	[ "$RESPONSE" = "y" -o "$RESPONSE" = "Y" ] || exit_on_error $? "Aborted by user"
 fi
 
 
@@ -45,11 +49,7 @@ else
 		TMP=$(mktemp --suffix=.pdx86-tag)
 	fi
 fi
-if [ -z "$TMP" ]; then
-	echo "ERROR: Failed to create a suitable temp file"
-	exit 1
-fi
-
+[ -n "$TMP" ] || exit_on_error $? "ERROR: Failed to create a suitable temp file"
 
 PREFIX=''
 (
@@ -68,16 +68,10 @@ while read line || [[ -n "$line" ]]; do
 done
 ) > $TMP
 $EDITOR $TMP
-if [ $? -ne 0 ]; then
-	echo "ERROR: Editor exited with error code $?."
-	exit 1
-fi
+exit_on_error $? "ERROR: Editor exited with error code $?."
 
 git tag -s -F $TMP -a platform-drivers-x86-$VERSION $COMMIT
-if [ $? -ne 0 ]; then
-	echo "git tag failed. Edited tag message saved in $TMP."
-	exit 1
-fi
+exit_on_error $? "git tag failed. Edited tag message saved in $TMP."
 
 echo "Created tag: $TAG"
 echo "Push with 'git push pdx86 $TAG'"
