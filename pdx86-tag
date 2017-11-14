@@ -68,6 +68,11 @@ while read line || [[ -n "$line" ]]; do
 done
 ) > $TMP
 $EDITOR $TMP
+if [ $? -ne 0 ]; then
+	echo "ERROR: Editor exited with error code $?."
+	exit 1
+fi
+
 git tag -s -F $TMP -a platform-drivers-x86-$VERSION $COMMIT
 if [ $? -ne 0 ]; then
 	echo "git tag failed. Edited tag message saved in $TMP."
