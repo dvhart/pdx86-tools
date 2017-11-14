@@ -9,7 +9,8 @@ echo
 
 git cherry -v master $1 | grep -e "^-"
 if [ $? -eq 0 ]; then
-	echo -e "\nERROR: The commits listed above have already been merged!"
+	echo
+	echo "ERROR: The commits listed above have already been merged!"
 	exit 255
 fi
 
