@@ -57,6 +57,7 @@ PREFIX=''
 	echo "SHORT SUMMARY OF CHANGES FOR LINUS";
 	git log --pretty='format:%s' master..$COMMIT | \
 	sed -e "s,^platform/x86: \?,," | \
+	sort -k1,1 -t ':' -s | \
 	while read line || [[ -n "$line" ]]; do
 		NEW_PREFIX=$(echo $line | cut -d ':' -f1)
 		SUBJECT=$(echo $line | cut -d ':' -f2-)
