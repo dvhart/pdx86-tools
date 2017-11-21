@@ -54,7 +54,9 @@ fi
 PREFIX=''
 (
 	echo -e "platform-drivers-x86 for $VERSION\n";
-	echo "SHORT SUMMARY OF CHANGES FOR LINUS";
+	echo "WRITEME: Highlights and summary";
+	echo "";
+	echo "The following is an automated git shortlog grouped by driver:";
 	git log --pretty='format:%s' master..$COMMIT | \
 	sed -e "s,^platform/x86: \?,," | \
 	sort -k1,1 -t ':' -s | \
