@@ -14,8 +14,21 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
+lock_args=
+while [ "$#" -ge "1" ]; do
+	case "$1" in
+	"-f")
+		lock_args="$lock_args $1"
+		;;
+	*)
+		break
+		;;
+	esac
+	shift
+done
+
 # Lock the repository
-pdx86-lock || exit 1
+pdx86-lock $lock_args || exit 1
 
 # Sync up with the remotes, prune them, and update the local master branch
 echo "Update Remotes"
