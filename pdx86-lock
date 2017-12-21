@@ -77,6 +77,8 @@ owner() {
 	else
 		echo "Lease expired: $(($(($ELAPSED_TIME-$LAST_LEASE))/60)) minutes ago"
 	fi
+
+	exit $ERR
 }
 
 lock() {
