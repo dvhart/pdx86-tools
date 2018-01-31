@@ -4,6 +4,10 @@ echo
 echo "Branch Status"
 for BRANCH in testing for-next fixes review-$PDX86_ID; do
 	REMOTE=$(git config branch.$BRANCH.remote)
+	if [ -z $REMOTE ]; then
+		printf "Branch \033[31;1m%8s\033[m is not configured! Skipping...\n" $BRANCH
+		continue
+	fi
 	if [ "$(git rev-list refs/heads/$BRANCH -1)" = \
 	     "$(git rev-list refs/remotes/$REMOTE/$BRANCH -1)" ]; then
 		printf "[\033[32;1m%8s\033[m]: Up to date with $REMOTE/$BRANCH\n" "$BRANCH"
