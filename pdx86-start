@@ -37,9 +37,10 @@ git fetch $(git config branch.master.remote)  master:master
 
 # Report on local vs remote state
 pdx86-branch-status
+echo
 
 # Report on Patchwork state
-echo -e "\nPatchwork Status"
+echo "Patchwork Status"
 which pwclient &> /dev/null
 if [ $? -eq 0 ]; then
 	pwclient list -a no -f '%{id} %{state} %{delegate} %{name}'
