@@ -2,7 +2,7 @@
 
 echo
 echo "Branch Status"
-for BRANCH in testing for-next fixes review-$PDX86_ID; do
+for BRANCH in for-next fixes review-$PDX86_ID; do
 	REMOTE=$(git config branch.$BRANCH.remote)
 	if [ -z $REMOTE ]; then
 		printf "Branch \033[31;1m%8s\033[m is not configured! Skipping...\n" $BRANCH
