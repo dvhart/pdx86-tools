@@ -86,7 +86,7 @@ lock() {
 		echo "$PDX86_ID" > $LOCKFILE
 		push "Lock acquired by $PDX86_ID (For $LEASE_HOURS hours)"
 		echo "Lock acquired by $PDX86_ID (For $LEASE_HOURS hours)"
-	elif ($FORCE && [ ! "$VAL" = "$PDX86_ID" ]); then
+	elif $FORCE; then
 		echo "$PDX86_ID" > $LOCKFILE
 		push "Lock forcibly acquired by $PDX86_ID (For $LEASE_HOURS hours)"
 		echo "Lock forcibly acquired by $PDX86_ID (For $LEASE_HOURS hours)"
