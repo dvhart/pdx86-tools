@@ -5,18 +5,19 @@ don't recognize.
 
 I have started using patchwork to help others check the status of their patch:
 
-New - I haven't looked at it
-Under Review:
-	I've started looking at it, it's pending a submaintainer, or a
-	response from the author. May be queued to review-$PDX86ID branch.
-Accpted & Archived:
-	I've queued it to the for-next branch
-Changes Requested & Archived:
-	Requested changes from the author, this version will not be applied.
-Deferred & Archived:
-	It was related to pdx86, but applied by someone else (usually Rafael).
-Not Applicable:
-	Not applicable to this tree, being picked up by someone else.
+* New
+  * I haven't looked at it
+* Under Review
+  * I've started looking at it, it's pending a submaintainer, or a
+    response from the author. May be queued to review-$PDX86ID branch.
+* Accpted & Archived
+  * I've queued it to the for-next branch
+* Changes Requested & Archived
+  * Requested changes from the author, this version will not be applied.
+* Deferred & Archived
+  * It was related to pdx86, but applied by someone else (usually Rafael).
+* Not Applicable
+  * Not applicable to this tree, being picked up by someone else.
 
 When I receive a patch, I quickly test it for checkpatch using mutt macros, if
 that fails, the author gets a request to clean up the patch.  I don't review it
