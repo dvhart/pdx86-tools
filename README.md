@@ -40,8 +40,8 @@ report, or me and the author an error report... and sometimes a patch (which I
 personally find hilarious).
 
 Second, I have jenkins running on my local workstation (16 core, 64 GB RAM)
-which picks up on "review-dvhart" changes and runs builds for 32 and 64 bit for
-allmodconfig and allyesconfig.
+which picks up on "review-$PDX86ID" changes and runs builds for 32 and 64 bit
+for allmodconfig and allyesconfig.
 
 TODO: This really needs to do some intelligent PDX86 related config fuzz
 testing.
