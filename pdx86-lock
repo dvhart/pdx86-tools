@@ -7,6 +7,9 @@
 # Remove the temporary repository
 # Report on the result
 
+PROG_NAME="${0##*/}"
+PROG_DIR="${0%/*}"
+
 PDX86_REPO=ssh://$PDX86_ID@git.infradead.org/srv/git/pdx86-tools.git
 LOCKFILE="LOCK"
 LEASE_HOURS=2
@@ -37,7 +40,7 @@ clone() {
 }
 
 usage() {
-	echo "Usage: $(basename $0) [OPTIONS]"
+	echo "Usage: $PROG_NAME [OPTIONS]"
 	echo ""
 	echo "With no arguments, attempt to acquire the lock with a default 2 hour lease"
 	echo ""
@@ -118,7 +121,7 @@ if [ -z "$PDX86_ID" ]; then
 	exit $ERR
 fi
 
-PDX86_DIR=`mktemp -d --suffix=.pdx86-lock`
+PDX86_DIR=$(mktemp -d --suffix=.$PROG_NAME)
 
 if [ ! -d "$PDX86_DIR" ]; then
 	echo "ERROR: failed to create temp directory"
