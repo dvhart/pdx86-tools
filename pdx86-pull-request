@@ -3,7 +3,7 @@
 PROG_NAME="${0##*/}"
 PROG_DIR="${0%/*}"
 
-TAG_PREFIX="platform-drivers-x86"
+. $PROG_DIR/pdx86-config
 
 MAINTAINERS_FILE="$PROG_DIR/MAINTAINERS"
 MAINTAINERS_DEFAULT="Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>"
