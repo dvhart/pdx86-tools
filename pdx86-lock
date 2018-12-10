@@ -10,6 +10,8 @@
 PROG_NAME="${0##*/}"
 PROG_DIR="${0%/*}"
 
+. $PROG_DIR/pdx86-config
+
 PDX86_REPO=ssh://$PDX86_ID@git.infradead.org/srv/git/pdx86-tools.git
 LOCKFILE="LOCK"
 LEASE_HOURS=2
@@ -30,7 +32,7 @@ trap clean_up HUP INT TERM
 clone() {
 	git clone -b mutex $PDX86_REPO $PDX86_DIR 2> /dev/null
 	if [ $? -ne 0 ]; then
-		echo "ERROR: failed to clone pdx86 repository ($PDX86_REPO)"
+		echo "ERROR: failed to clone $REMOTE repository ($PDX86_REPO)"
 		clean_up
 		exit $ERR
 	fi
