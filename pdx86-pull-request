@@ -66,7 +66,7 @@ To: $MM
 Cc: $ML, $MAINTAINERS
 Subject: [GIT PULL] $SUBJECT
 
-Hi Linus,
+Hi $(echo $MM | cut -f1 -d' '),
 
 WRITEME: Anything relevant to the merge itself, but not the content.
 
