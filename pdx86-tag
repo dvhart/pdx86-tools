@@ -79,5 +79,5 @@ git tag -s -F $TMP -a $TAG_PREFIX-$VERSION $COMMIT
 exit_on_error $? "git tag failed. Edited tag message saved in $TMP."
 
 echo "Created tag: $TAG"
-echo "Push with 'git push pdx86 $TAG'"
+echo "Push with 'git push $REMOTE $TAG'"
 rm $TMP
