@@ -76,7 +76,7 @@ $SIGNATURE
 
 EOM
 
-git request-pull master $URL $1 >> $MSG
+git request-pull $MASTER $URL $1 >> $MSG
 if [ $? -ne 0 ]; then
 	rm $MSG
 	echo "ERROR: request pull failed"
