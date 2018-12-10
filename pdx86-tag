@@ -5,8 +5,6 @@ PROG_DIR="${0%/*}"
 
 . $PROG_DIR/pdx86-config
 
-MASTER="master"
-
 usage() {
 	echo "Usage: $PROG_NAME <VERSION> <COMMIT>"
 	echo "e.g. $PROG_NAME v4.4-2 for-next"
