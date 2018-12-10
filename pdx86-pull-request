@@ -8,7 +8,7 @@ MAINTAINERS_DEFAULT="Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@i
 
 URL="git://git.infradead.org/linux-platform-drivers-x86.git"
 TAG=$1
-MSG=$TAG.pdx86-pull-request
+MSG=$TAG.$PROG_NAME
 
 usage() {
 	echo "usage: $PROG_NAME <TAG>"
