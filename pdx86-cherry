@@ -1,5 +1,10 @@
 #!/bin/sh
 
+PROG_NAME="${0##*/}"
+PROG_DIR="${0%/*}"
+
+. $PROG_DIR/pdx86-config
+
 # TODO: verify $1 is a valid git commit
 
 echo "Be sure master is current with Linus' master branch"
