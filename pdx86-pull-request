@@ -3,8 +3,13 @@
 PROG_NAME="${0##*/}"
 PROG_DIR="${0%/*}"
 
+TAG_PREFIX="platform-drivers-x86"
+
 MAINTAINERS_FILE="$PROG_DIR/MAINTAINERS"
 MAINTAINERS_DEFAULT="Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>"
+
+ML="LKML <linux-kernel@vger.kernel.org>"
+MM="Linus Torvalds <torvalds@linux-foundation.org>"
 
 URL="git://git.infradead.org/linux-platform-drivers-x86.git"
 TAG=$1
@@ -38,7 +43,7 @@ if [ -e $MSG ]; then
 	exit 1
 fi
 
-SUBJECT=$(echo $TAG | sed -e "s/\(platform-drivers-x86\)-v\(.*\)/\1 for \2/" || echo $TAG)
+SUBJECT=$(echo $TAG | sed -e "s/\($TAG_PREFIX\)-v\(.*\)/\1 for \2/" || echo $TAG)
 USERNAME=$(git config --get user.name)
 USEREMAIL=$(git config --get user.email)
 
@@ -57,8 +62,8 @@ fi
 cat > $MSG << EOM
 From: $USERNAME <$USEREMAIL>
 Date: $(date -R)
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, $MAINTAINERS
+To: $MM
+Cc: $ML, $MAINTAINERS
 Subject: [GIT PULL] $SUBJECT
 
 Hi Linus,
