@@ -16,7 +16,7 @@ TAG=$1
 MSG=$TAG.$PROG_NAME
 
 usage() {
-	echo "usage: $PROG_NAME <TAG>"
+	echo "usage: $PROG_NAME <TAG|IB>"
 }
 
 if [ $# -ne 1 ] || [ -z "$TAG" ]; then
@@ -32,10 +32,24 @@ if [ $? -ne 0 ]; then
 fi
 
 TAG_TYPE=$(git cat-file -t $TAG)
-if [ ! "$TAG_TYPE" = "tag" ]; then
-	echo "ERROR: $TAG is not a tag (it's a $TAG_TYPE)"
-	usage
-	exit 1
+
+# Check if it's not an existing tag
+if [ "$TAG_TYPE" != "tag" ]; then
+	IB=$(git name-rev --name-only --refs="$IB_PREFIX-*" $TAG)
+
+	# Check if it's undefined name reference
+	if [ "$IB" = "undefined" ]; then
+		echo "ERROR: $TAG is not a tag (it's a $TAG_TYPE)"
+		usage
+		exit 1
+	fi
+
+	# Check if it's not an immutable branch
+	if [ -z $(git branch --list --format="%(objectname)" "$IB") ]; then
+		echo "ERROR: $TAG is not an immutable branch"
+		usage
+		exit 1
+	fi
 fi
 
 if [ -e $MSG ]; then
@@ -43,7 +57,17 @@ if [ -e $MSG ]; then
 	exit 1
 fi
 
-SUBJECT=$(echo $TAG | sed -e "s/\($TAG_PREFIX\)-v\(.*\)/\1 for \2/" || echo $TAG)
+case "$TAG_TYPE" in
+tag)
+	SUBJECT=$(echo $TAG | sed -e "s/\($TAG_PREFIX\)-v\(.*\)/\1 for \2/" || echo $TAG)
+	BODY="WRITEME: Anything relevant to the merge itself, but not the content."
+	;;
+commit)
+	SUBJECT=$(echo $TAG | sed -e "s/$IB_PREFIX-\(.*\)/immutable branch for \1/" || echo $TAG)
+	BODY="Please, pull immutable branch between $TAG_PREFIX and your subsystem."
+	;;
+esac
+
 USERNAME=$(git config --get user.name)
 USEREMAIL=$(git config --get user.email)
 
@@ -68,7 +92,7 @@ Subject: [GIT PULL] $SUBJECT
 
 Hi $(echo $MM | cut -f1 -d' '),
 
-WRITEME: Anything relevant to the merge itself, but not the content.
+$BODY
 
 Thanks,
 
