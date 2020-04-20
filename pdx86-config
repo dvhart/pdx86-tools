@@ -1,4 +1,5 @@
 TAG_PREFIX="platform-drivers-x86"
+IB_PREFIX="ib-pdx86"
 SUBJ_PREFIX="platform/x86"
 
 MASTER="master"
