@@ -83,4 +83,9 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 vim $MSG +3
+if [ $? -ne 0 ]; then
+	rm $MSG
+	echo "ERROR: message editor failed"
+	exit 1
+fi
 echo "Use 'mutt -H $MSG' to send the pull request."
