@@ -12,7 +12,8 @@ PROG_DIR="${0%/*}"
 
 . $PROG_DIR/pdx86-config
 
-PDX86_REPO=ssh://$PDX86_ID@git.infradead.org/srv/git/pdx86-tools.git
+#PDX86_REPO=ssh://$PDX86_ID@git.infradead.org/srv/git/pdx86-tools.git
+PDX86_REPO=git@github.com:dvhart/pdx86-tools.git
 LOCKFILE="LOCK"
 LEASE_HOURS=2
 FORCE=false
