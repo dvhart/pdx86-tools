@@ -11,7 +11,6 @@ MAINTAINERS_DEFAULT="Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@i
 ML="LKML <linux-kernel@vger.kernel.org>"
 MM="Linus Torvalds <torvalds@linux-foundation.org>"
 
-URL="git://git.infradead.org/linux-platform-drivers-x86.git"
 TAG=$1
 MSG=$TAG.$PROG_NAME
 
@@ -100,7 +99,7 @@ $SIGNATURE
 
 EOM
 
-git request-pull $MASTER $URL $1 >> $MSG
+git request-pull $MASTER $GIT_URL $1 >> $MSG
 if [ $? -ne 0 ]; then
 	rm $MSG
 	echo "ERROR: request pull failed"

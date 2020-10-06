@@ -7,9 +7,9 @@
 # When the user exits, release the repo lock
 
 # Verify we're running in the linux-platform-driver-x86 git repository
-git remote -v | grep -q git.infradead.org/srv/git/linux-platform-drivers-x86.git
+git remote -v | grep -q "$GIT_URL"
 if [ $? -ne 0 ]; then
-	echo "Error: linux-platform-drivers-x86 remote not found"
+	echo "Error: $TAG_PREFIX remote not found"
 	echo "       Are you in your pdx86 directory?"
 	exit 1
 fi
