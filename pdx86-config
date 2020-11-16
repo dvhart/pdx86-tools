@@ -1,7 +1,7 @@
-TAG_PREFIX="platform-drivers-x86"
-IB_PREFIX="ib-pdx86"
-SUBJ_PREFIX="platform/x86"
+TAG_PREFIX="intel-pinctrl"
+IB_PREFIX="ib-pinctrl-intel"
+SUBJ_PREFIX="pinctrl"
 
-GIT_URL="git://git.infradead.org/linux-$TAG_PREFIX.git"
-MASTER="master"
-REMOTE="pdx86"
+GIT_URL="git@gitolite.kernel.org:pub/scm/linux/kernel/git/pinctrl/intel.git"
+MASTER="origin/master"
+REMOTE="korg-pinctrl-intel"
