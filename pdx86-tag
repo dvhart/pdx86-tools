@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 PROG_NAME="${0##*/}"
 PROG_DIR="${0%/*}"
@@ -31,7 +31,7 @@ COMMIT=$2		# Whatever commit ID Git recognizes
 TAG="${TAG_PREFIX}-${VERSION}"
 
 # Verify the tag does not already exist
-git rev-parse $TAG &> /dev/null && exit_on_error 1 "Tag already exists: $TAG"
+git rev-parse $TAG > /dev/null 2>&1 && exit_on_error 1 "Tag already exists: $TAG"
 
 # Perform a sanity check before creating the tag
 $PROG_DIR/pdx86-cherry $2
@@ -42,11 +42,11 @@ if [ $? -ne 0 ]; then
 fi
 
 TMP=
-which tempfile &> /dev/null
+which tempfile > /dev/null 2>&1
 if [ $? -eq 0 ]; then
 	TMP=$(tempfile -s .$PROG_NAME)
 else
-	which mktemp &> /dev/null
+	which mktemp > /dev/null 2>&1
 	if [ $? -eq 0 ]; then
 		TMP=$(mktemp --suffix=.$PROG_NAME)
 	fi
@@ -55,19 +55,21 @@ fi
 
 PREFIX=''
 (
-	echo -e "$TAG_PREFIX for $VERSION\n";
+	echo "$TAG_PREFIX for $VERSION";
+	echo "";
 	echo "WRITEME: Highlights and summary";
 	echo "";
 	echo "The following is an automated git shortlog grouped by driver:";
 	git log --pretty='format:%s' $MASTER..$COMMIT | \
 	sed -e "s,^$SUBJ_PREFIX: \?,," | \
 	sort -k1,1 -t ':' -s | \
-	while read line || [[ -n "$line" ]]; do
+	while read line || [ -n "$line" ]; do
 		NEW_PREFIX=$(echo $line | cut -d ':' -f1)
 		SUBJECT=$(echo $line | cut -d ':' -f2-)
 		if [ "$PREFIX" != "$NEW_PREFIX" ]; then
+			echo ""
+			echo "$NEW_PREFIX:"
 			PREFIX="$NEW_PREFIX"
-			echo -e "\n$PREFIX:"
 		fi
 		echo " - $SUBJECT"
 	done
