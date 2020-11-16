@@ -6,10 +6,10 @@ PROG_DIR="${0%/*}"
 . $PROG_DIR/pdx86-config
 
 MAINTAINERS_FILE="$PROG_DIR/MAINTAINERS"
-MAINTAINERS_DEFAULT="Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>"
+MAINTAINERS_DEFAULT="Mika Westerberg <mika.westerberg@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>"
 
-ML="LKML <linux-kernel@vger.kernel.org>"
-MM="Linus Torvalds <torvalds@linux-foundation.org>"
+ML="Linux pin control <linux-gpio@vger.kernel.org>"
+MM="Linus Walleij <linus.walleij@linaro.org>"
 
 TAG=$1
 MSG=$TAG.$PROG_NAME
@@ -85,11 +85,11 @@ fi
 cat > $MSG << EOM
 From: $USERNAME <$USEREMAIL>
 Date: $(date -R)
-To: $MM
-Cc: $ML, $MAINTAINERS
+To: $ML
+Cc: $MM, $MAINTAINERS
 Subject: [GIT PULL] $SUBJECT
 
-Hi $(echo $MM | cut -f1 -d' '),
+Hi $(echo $ML | cut -f1 -d'<') maintainers,
 
 $BODY
 
