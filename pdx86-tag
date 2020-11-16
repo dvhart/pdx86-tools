@@ -27,7 +27,7 @@ if [ $# -ne 2 ]; then
 fi
 
 VERSION="v${1##*v}"	# Always produce "v4.4-2"-like version
-COMMIT=$2		# Whatever commit ID Git recognizes
+COMMIT_RANGE=$2		# Whatever commit ID Git recognizes
 TAG="${TAG_PREFIX}-${VERSION}"
 
 # Verify the tag does not already exist
@@ -53,6 +53,9 @@ else
 fi
 [ -n "$TMP" ] || exit_on_error $? "ERROR: Failed to create a suitable temp file"
 
+COMMIT="$(echo $COMMIT_RANGE | sed -e 's,\(.\+\)\.\.\(.\+\),\2,')"
+[ "$COMMIT_RANGE" = "$COMMIT" ] && COMMIT_RANGE="$MASTER..$COMMIT"
+
 PREFIX=''
 (
 	echo "$TAG_PREFIX for $VERSION";
@@ -60,7 +63,7 @@ PREFIX=''
 	echo "WRITEME: Highlights and summary";
 	echo "";
 	echo "The following is an automated git shortlog grouped by driver:";
-	git log --pretty='format:%s' $MASTER..$COMMIT | \
+	git log --pretty='format:%s' $COMMIT_RANGE | \
 	sed -e "s,^$SUBJ_PREFIX: \?,," | \
 	sort -k1,1 -t ':' -s | \
 	while read line || [ -n "$line" ]; do
