@@ -6,7 +6,7 @@ PROG_DIR="${0%/*}"
 . $PROG_DIR/pdx86-config
 
 usage() {
-	echo "Usage: $PROG_NAME <VERSION> <COMMIT>"
+	echo "Usage: $PROG_NAME [options] <VERSION> <COMMIT>"
 	echo "e.g. $PROG_NAME v4.4-2 for-next"
 }
 
@@ -20,6 +20,17 @@ exit_on_error() {
 	exit $code
 }
 
+new_tag_prefix="$TAG_PREFIX"
+while [ "$#" -ge "1" ]; do
+	case "$1" in
+	-t)
+		new_tag_prefix="$2"; shift;;
+	*)
+		break;;
+	esac
+	shift
+done
+
 if [ $# -ne 2 ]; then
 	echo $#
 	usage
@@ -28,7 +39,7 @@ fi
 
 VERSION="v${1##*v}"	# Always produce "v4.4-2"-like version
 COMMIT_RANGE=$2		# Whatever commit ID Git recognizes
-TAG="${TAG_PREFIX}-${VERSION}"
+TAG="${new_tag_prefix}-${VERSION}"
 
 # Verify the tag does not already exist
 git rev-parse $TAG > /dev/null 2>&1 && exit_on_error 1 "Tag already exists: $TAG"
@@ -58,7 +69,7 @@ COMMIT="$(echo $COMMIT_RANGE | sed -e 's,\(.\+\)\.\.\(.\+\),\2,')"
 
 PREFIX=''
 (
-	echo "$TAG_PREFIX for $VERSION";
+	echo "$new_tag_prefix for $VERSION";
 	echo "";
 	echo "WRITEME: Highlights and summary";
 	echo "";
@@ -80,7 +91,7 @@ PREFIX=''
 $EDITOR $TMP
 exit_on_error $? "ERROR: Editor exited with error code $?."
 
-git tag -s -F $TMP -a $TAG_PREFIX-$VERSION $COMMIT
+git tag -s -F $TMP -a $new_tag_prefix-$VERSION $COMMIT
 exit_on_error $? "git tag failed. Edited tag message saved in $TMP."
 
 echo "Created tag: $TAG"
