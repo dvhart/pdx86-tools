@@ -50,6 +50,7 @@ usage() {
 	echo "  -f     force the lock or unlock operation"
 	echo "         (has no effect if you own the lock)"
 	echo "  -h     display this help and exit"
+	echo "  -n     do nothing"
 	echo "  -s     show status of the lock, but do not acquire or free it"
 	echo "  -t NUM specify a lease time of NUM hours, defaults to 2 hours"
 	echo "  -u     release the lock"
@@ -139,6 +140,9 @@ while true; do
 	"-h")
 		CMD="help"
 		;;
+	"-n")
+		CMD="nothing"
+		;;
 	"-s")
 		CMD="status"
 		;;
@@ -159,6 +163,8 @@ done
 case "$CMD" in
 "help")
 	usage
+	;;
+"nothing")
 	;;
 "lock")
 	clone
