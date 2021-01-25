@@ -20,6 +20,9 @@ while [ "$#" -ge "1" ]; do
 	"-f")
 		lock_args="$lock_args $1"
 		;;
+	"-n")
+		lock_args="$lock_args $1"
+		;;
 	*)
 		break
 		;;
@@ -60,4 +63,4 @@ echo
 PS1_PREFIX="PDX86" $SHELL
 
 # Wait for "exit" then unlock the repository and return
-pdx86-lock -u
+pdx86-lock $lock_args -u
