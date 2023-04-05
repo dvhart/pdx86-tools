@@ -11,18 +11,22 @@ MAINTAINERS_DEFAULT="Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@i
 ML="LKML <linux-kernel@vger.kernel.org>"
 MM="Linus Torvalds <torvalds@linux-foundation.org>"
 
-TAG=$1
+TAG_RANGE=$1
 MSG=$TAG.$PROG_NAME
 
 usage() {
 	echo "usage: $PROG_NAME <TAG|IB>"
 }
 
-if [ $# -ne 1 ] || [ -z "$TAG" ]; then
+if [ $# -ne 1 ] || [ -z "$TAG_RANGE" ]; then
 	echo "ERROR: invalid arguments"
 	usage
 	exit 1
 fi
+
+BASE="$(echo $TAG_RANGE | sed -e 's,\(.\+\)\.\.\(.\+\),\1,')"
+TAG="$(echo $TAG_RANGE | sed -e 's,\(.\+\)\.\.\(.\+\),\2,')"
+[ "$BASE" = "$TAG" ] && BASE="$MASTER"
 
 git cat-file -e $TAG 2>/dev/null
 if [ $? -ne 0 ]; then
@@ -99,7 +103,7 @@ $SIGNATURE
 
 EOM
 
-git request-pull $MASTER $GIT_URL $TAG >> $MSG
+git request-pull $BASE $GIT_URL $TAG >> $MSG
 if [ $? -ne 0 ]; then
 	rm $MSG
 	echo "ERROR: request pull failed"
