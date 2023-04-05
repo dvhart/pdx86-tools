@@ -11,13 +11,11 @@ MAINTAINERS_DEFAULT="Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@i
 ML="LKML <linux-kernel@vger.kernel.org>"
 MM="Linus Torvalds <torvalds@linux-foundation.org>"
 
-TAG_RANGE=$1
-MSG=$TAG.$PROG_NAME
-
 usage() {
 	echo "usage: $PROG_NAME <TAG|IB>"
 }
 
+TAG_RANGE=$1
 if [ $# -ne 1 ] || [ -z "$TAG_RANGE" ]; then
 	echo "ERROR: invalid arguments"
 	usage
@@ -55,6 +53,7 @@ if [ "$TAG_TYPE" != "tag" ]; then
 	fi
 fi
 
+MSG=$TAG.$PROG_NAME
 if [ -e $MSG ]; then
 	echo "ERROR: $MSG exists, remove or rename and try again."
 	exit 1
