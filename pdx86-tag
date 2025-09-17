@@ -73,20 +73,6 @@ PREFIX=''
 	echo "";
 	echo "WRITEME: Highlights and summary";
 	echo "";
-	echo "The following is an automated git shortlog grouped by driver:";
-	git log --pretty='format:%s' $COMMIT_RANGE | \
-	sed -e "s,^$SUBJ_PREFIX: \?,," | \
-	sort -k1,1 -t ':' -s | \
-	while read line || [ -n "$line" ]; do
-		NEW_PREFIX=$(echo $line | cut -d ':' -f1)
-		SUBJECT=$(echo $line | cut -d ':' -f2-)
-		if [ "$PREFIX" != "$NEW_PREFIX" ]; then
-			echo ""
-			echo "$NEW_PREFIX:"
-			PREFIX="$NEW_PREFIX"
-		fi
-		echo " - $SUBJECT"
-	done
 ) > $TMP
 $EDITOR $TMP
 exit_on_error $? "ERROR: Editor exited with error code $?."
